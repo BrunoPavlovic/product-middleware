@@ -2,17 +2,17 @@ package com.example.middleware.model;
 
 public class Product {
     private int id;
-    private String name;
+    private String title;
     private String description;
-    private int price;
-    private String url;
+    private double price;
+    private String thumbnail;
 
-    public Product(int id, String name, String description, int price, String url) {
+    public Product(int id, String title, String description, int price, String thumbnail) {
         this.id = id;
-        this.name = name;
+        this.title = title;
         this.description = description;
         this.price = price;
-        this.url = url;
+        this.thumbnail = thumbnail;
     }
 
     public int getId() {
@@ -23,12 +23,12 @@ public class Product {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDescription() {
@@ -39,7 +39,7 @@ public class Product {
         this.description = description;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 
@@ -47,11 +47,11 @@ public class Product {
         this.price = price;
     }
 
-    public String getUrl() {
-        return url;
+    public String getThumbnail() {
+        return thumbnail;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
     }
 }

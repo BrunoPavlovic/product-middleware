@@ -19,4 +19,8 @@ public class ProductService {
     public List<Product> getAllProducts() {
         return repository.getAll();
     }
+
+    public Product getProductById(int id) {
+        return repository.getById(id);
+    }
 }

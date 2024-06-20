@@ -28,4 +28,8 @@ public class ProductService {
     public List<Product> filterProducts(String category, Double minPrice, Double maxPrice) {
         return ((ProductRepositoryAPI) repository).filterByCategoryAndPrice(category, minPrice, maxPrice);
     }
+
+    public List<Product> searchProducts(String title){
+        return ((ProductRepositoryAPI) repository).searchByTitle(title);
+    }
 }

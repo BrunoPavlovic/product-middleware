@@ -44,6 +44,13 @@ public class ProductRepositoryAPI implements Repository<Product> {
                 .collect(Collectors.toList());
     }
 
+    public List<Product> searchByTitle(String title){
+        List<Product> products = getAll();
+        return products.stream()
+                .filter(product -> product.getTitle().contains(title))
+                .collect(Collectors.toList());
+    }
+
     //methods for future needs
     @Override
     public void add(Product entity) {

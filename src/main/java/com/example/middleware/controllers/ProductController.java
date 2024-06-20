@@ -46,6 +46,17 @@ public class ProductController {
         if (!products.isEmpty()) {
             return new ResponseEntity<>(products, HttpStatus.OK);
         }
+
         return new ResponseEntity<>("No products found with the given filter!", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchProducts(@RequestParam String title){
+        List<Product> products = productService.searchProducts(title);
+        if(!products.isEmpty()){
+            return new ResponseEntity<>(products, HttpStatus.OK);
+        }
+
+        return  new ResponseEntity<>("No products found with given title!", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

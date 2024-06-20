@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.type.TypeReference;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Repository
 public class ProductRepositoryAPI implements Repository<Product> {
@@ -31,8 +32,16 @@ public class ProductRepositoryAPI implements Repository<Product> {
 
     @Override
     public Product getById(int id) {
-        String url = BASE_URL + "/" + id;
-        return restTemplate.getForObject(url, Product.class);
+        return restTemplate.getForObject(BASE_URL + "/" + id, Product.class);
+    }
+
+    public List<Product> filterByCategoryAndPrice(String category, Double minPrice, Double maxPrice) {
+        List<Product> products = getAll();
+        return products.stream()
+                .filter(product -> (category == null || product.getCategory().equals(category)) &&
+                        (minPrice == null || product.getPrice() >= minPrice) &&
+                        (maxPrice == null || product.getPrice() <= maxPrice))
+                .collect(Collectors.toList());
     }
 
     //methods for future needs

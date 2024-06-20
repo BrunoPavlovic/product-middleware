@@ -17,16 +17,20 @@ public class Product {
     @JsonProperty("price")
     private double price;
 
+    @JsonProperty("category")
+    private String category;
+
     @JsonProperty("thumbnail")
     private String thumbnail;
 
     public Product(){}
 
-    public Product(int id, String title, String description, int price, String thumbnail) {
+    public Product(int id, String title, String description, int price, String category, String thumbnail) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.price = price;
+        this.category = category;
         this.thumbnail = thumbnail;
     }
 
@@ -61,6 +65,9 @@ public class Product {
     public void setPrice(int price) {
         this.price = price;
     }
+
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
 
     public String getThumbnail() {
         return thumbnail;

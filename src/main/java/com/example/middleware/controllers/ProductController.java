@@ -35,7 +35,7 @@ public class ProductController {
             return new ResponseEntity<>(product, HttpStatus.OK);
         }
 
-        return new ResponseEntity<>("Product with id " + id + " not found!", HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>("Product with id " + id + " not found!", HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/filter")
@@ -47,7 +47,7 @@ public class ProductController {
             return new ResponseEntity<>(products, HttpStatus.OK);
         }
 
-        return new ResponseEntity<>("No products found with the given filter!", HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>("No products found with the given filter!", HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/search")
@@ -57,6 +57,6 @@ public class ProductController {
             return new ResponseEntity<>(products, HttpStatus.OK);
         }
 
-        return  new ResponseEntity<>("No products found with given title!", HttpStatus.INTERNAL_SERVER_ERROR);
+        return  new ResponseEntity<>("No products found with given title!", HttpStatus.NOT_FOUND);
     }
 }

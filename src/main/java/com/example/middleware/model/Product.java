@@ -1,11 +1,26 @@
 package com.example.middleware.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Product {
+    @JsonProperty("id")
     private int id;
+
+    @JsonProperty("title")
     private String title;
+
+    @JsonProperty("description")
     private String description;
+
+    @JsonProperty("price")
     private double price;
+
+    @JsonProperty("thumbnail")
     private String thumbnail;
+
+    public Product(){}
 
     public Product(int id, String title, String description, int price, String thumbnail) {
         this.id = id;

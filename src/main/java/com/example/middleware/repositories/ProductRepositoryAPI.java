@@ -1,21 +1,32 @@
 package com.example.middleware.repositories;
 
 import com.example.middleware.model.Product;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Arrays;
+import com.fasterxml.jackson.core.type.TypeReference;
 import java.util.List;
 
+@org.springframework.stereotype.Repository
 public class ProductRepositoryAPI implements Repository<Product> {
     private static final String BASE_URL = "https://dummyjson.com/products";
+    private static final ObjectMapper mapper = new ObjectMapper();
     private final RestTemplate restTemplate = new RestTemplate();
 
     @Override
     public List<Product> getAll() {
-        Product[] products = restTemplate.getForObject(BASE_URL, Product[].class);
-        if(products == null)
-            return null;
-        return Arrays.asList(products);
+        String jsonResponse = restTemplate.getForObject(BASE_URL, String.class);
+
+        JsonNode root = null;
+        try {
+            root = mapper.readTree(jsonResponse);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        JsonNode data = root.at("/products");
+        return mapper.convertValue(data, new TypeReference<>() {});
     }
 
     @Override

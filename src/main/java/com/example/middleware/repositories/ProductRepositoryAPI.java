@@ -4,6 +4,7 @@ import com.example.middleware.model.Product;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.type.TypeReference;
 import java.util.List;
@@ -17,22 +18,25 @@ public class ProductRepositoryAPI implements Repository<Product> {
 
     @Override
     public List<Product> getAll() {
-        String jsonResponse = restTemplate.getForObject(BASE_URL, String.class);
-
-        JsonNode root = null;
         try {
-            root = mapper.readTree(jsonResponse);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+            String jsonResponse = restTemplate.getForObject(BASE_URL, String.class);
 
-        JsonNode data = root.at("/products");
-        return mapper.convertValue(data, new TypeReference<>() {});
+            JsonNode root = mapper.readTree(jsonResponse);
+            JsonNode data = root.at("/products");
+
+            return mapper.convertValue(data, new TypeReference<>() {});
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Error while fetching products: " + e.getMessage());
+        }
     }
 
     @Override
     public Product getById(int id) {
-        return restTemplate.getForObject(BASE_URL + "/" + id, Product.class);
+        try {
+            return restTemplate.getForObject(BASE_URL + "/" + id, Product.class);
+        } catch (RestClientException e) {
+            throw new RuntimeException("Error while fetching product with id: " + e.getMessage());
+        }
     }
 
     public List<Product> filterByCategoryAndPrice(String category, Double minPrice, Double maxPrice) {

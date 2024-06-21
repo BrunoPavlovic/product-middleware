@@ -1,6 +1,8 @@
 package com.example.middleware.controllers;
 
 import com.example.middleware.model.Product;
+import com.example.middleware.model.UserDetails;
+import com.example.middleware.services.AuthService;
 import com.example.middleware.services.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -22,11 +24,13 @@ import java.util.List;
 @RequestMapping("/api/v1/products")
 public class ProductController {
     private final ProductService productService;
+    private final AuthService authService;
     private final Logger logger = LogManager.getLogger(ProductController.class);
 
     @Autowired
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, AuthService authService) {
         this.productService = productService;
+        this.authService = authService;
     }
 
     @Operation(summary = "Get all products",
@@ -37,7 +41,11 @@ public class ProductController {
             @ApiResponse(responseCode = "500", description = "No products found!",
                     content = @Content) })
     @GetMapping
-    public ResponseEntity<?> getAllProducts() {
+    public ResponseEntity<?> getAllProducts(@RequestHeader("Authorization") String authorizationHeader) {
+        if(!isLoggedIn(authorizationHeader)){
+            return new ResponseEntity<>("Unauthorized access", HttpStatus.UNAUTHORIZED);
+        }
+
         logger.info("Fetching all products");
         List<Product> products =  productService.getAllProducts();
         if(!products.isEmpty()){
@@ -59,7 +67,12 @@ public class ProductController {
     @Parameter( description = "Id of product to be retrieved",
             required = true)
     @GetMapping("/{id}")
-    public ResponseEntity<?> getProductById(@PathVariable int id) {
+    public ResponseEntity<?> getProductById(@RequestHeader("Authorization") String authorizationHeader,
+                                            @PathVariable int id) {
+        if(!isLoggedIn(authorizationHeader)){
+            return new ResponseEntity<>("Unauthorized access", HttpStatus.UNAUTHORIZED);
+        }
+
         logger.info("Fetching product by id");
         Product product = productService.getProductById(id);
         if(product != null){
@@ -85,9 +98,14 @@ public class ProductController {
             @Parameter(name = "maxPrice", description = "Maximum price of the product", required = false, schema = @Schema(type = "integer"))
     })
     @GetMapping("/filter")
-    public ResponseEntity<?> filterProducts(@RequestParam(required = false) String category,
+    public ResponseEntity<?> filterProducts(@RequestHeader("Authorization") String authorizationHeader,
+                                            @RequestParam(required = false) String category,
                                             @RequestParam(required = false) Double minPrice,
                                             @RequestParam(required = false) Double maxPrice) {
+        if(!isLoggedIn(authorizationHeader)){
+            return new ResponseEntity<>("Unauthorized access", HttpStatus.UNAUTHORIZED);
+        }
+
         logger.info("Filtering products");
         List<Product> products = productService.filterProducts(category, minPrice, maxPrice);
         if (!products.isEmpty()) {
@@ -108,7 +126,12 @@ public class ProductController {
             @ApiResponse(responseCode = "404", description = "No products found with given title!",
                     content = @Content) })
     @GetMapping("/search")
-    public ResponseEntity<?> searchProducts(@RequestParam String title){
+    public ResponseEntity<?> searchProducts(@RequestHeader("Authorization") String authorizationHeader,
+                                            @RequestParam String title){
+        if(!isLoggedIn(authorizationHeader)){
+            return new ResponseEntity<>("Unauthorized access", HttpStatus.UNAUTHORIZED);
+        }
+
         logger.info("Searching products with title: {}", title);
         List<Product> products = productService.searchProducts(title);
         if(!products.isEmpty()){
@@ -118,5 +141,12 @@ public class ProductController {
 
         logger.warn("No products with title: {} found", title);
         return  new ResponseEntity<>("No products found with given title!", HttpStatus.NOT_FOUND);
+    }
+
+    private boolean isLoggedIn(String authorizationHeader) {
+        logger.info("Authorization with Bearer token");
+        String token = authorizationHeader.substring("Bearer ".length());
+        UserDetails user = authService.getCurrentAuthUser(token);
+        return user != null;
     }
 }

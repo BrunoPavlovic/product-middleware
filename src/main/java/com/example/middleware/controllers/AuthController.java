@@ -1,6 +1,7 @@
 package com.example.middleware.controllers;
 
 import com.example.middleware.model.User;
+import com.example.middleware.model.UserDetails;
 import com.example.middleware.services.AuthService;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.logging.log4j.LogManager;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/v1/auth")
@@ -36,12 +39,13 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<String> currentUser(){
+    public ResponseEntity<?> currentUser(@RequestHeader("Authorization") String authorizationHeader){
         logger.info("Fetching information about current user");
-        String username = authService.getCurrentAuthUser();
-        if(!username.isEmpty()){
-            logger.debug("Current user with username {} is logged in" , username);
-            return new ResponseEntity<>("Current user is: " + username, HttpStatus.OK);
+        String token = authorizationHeader.substring("Bearer ".length());
+        UserDetails user = authService.getCurrentAuthUser(token);
+        if(user != null){
+            logger.debug("Current user with username {} is logged in" , user.getUsername());
+            return new ResponseEntity<>(user, HttpStatus.OK);
         } else {
             logger.warn("No current logged user");
             return new ResponseEntity<>("No current logged user!", HttpStatus.NOT_FOUND);
@@ -51,10 +55,10 @@ public class AuthController {
     @PostMapping("/refresh")
     public ResponseEntity<?> refreshToken(@RequestBody JsonNode request){
         logger.info("Sending request for extending a session with refresh token");
-        User user = authService.refreshToken(request);
-        if(user != null){
+        Map<String,String> updatedTokens = authService.refreshToken(request);
+        if(!updatedTokens.isEmpty()){
             logger.debug("Session is extending and new tokens are created");
-            return new ResponseEntity<>(user, HttpStatus.OK);
+            return new ResponseEntity<>(updatedTokens, HttpStatus.OK);
         } else {
             logger.error("Error while extending session");
             return new ResponseEntity<>("Error while extending session ", HttpStatus.BAD_REQUEST);

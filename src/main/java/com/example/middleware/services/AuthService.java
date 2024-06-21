@@ -1,6 +1,7 @@
 package com.example.middleware.services;
 
 import com.example.middleware.model.User;
+import com.example.middleware.model.UserDetails;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,6 +10,9 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class AuthService {
@@ -19,7 +23,6 @@ public class AuthService {
     private static final ObjectMapper mapper = new ObjectMapper();
     private final RestTemplate restTemplate = new RestTemplate();
     private final Logger logger = LogManager.getLogger(AuthService.class);
-    private User currentUser;
 
     public User login(JsonNode request){
         try {
@@ -31,8 +34,7 @@ public class AuthService {
             ResponseEntity<JsonNode> response = restTemplate.exchange(LOGIN_URL, HttpMethod.POST, entity, JsonNode.class);
 
             if(response.getStatusCode() == HttpStatus.OK) {
-                currentUser = mapper.convertValue(response.getBody(), new TypeReference<>() {});
-                return currentUser;
+                return mapper.convertValue(response.getBody(), new TypeReference<>() {});
             }
 
             logger.error("Authentication failed: {}", response.getStatusCode());
@@ -43,19 +45,17 @@ public class AuthService {
         }
     }
 
-    public String getCurrentAuthUser(){
+    public UserDetails getCurrentAuthUser(String token){
         try {
             logger.info("Fetching information about current user");
-
             HttpHeaders headers = new HttpHeaders();
-            headers.setBearerAuth(currentUser.getToken());
+            headers.setBearerAuth(token);
 
             HttpEntity<JsonNode> entity = new HttpEntity<>(headers);
             ResponseEntity<JsonNode> response = restTemplate.exchange(CURRENT_USER_URL, HttpMethod.GET, entity, JsonNode.class);
 
-            if(response.getStatusCode() == HttpStatus.OK){
-                JsonNode responseBody = response.getBody();
-                return responseBody.get("username").asText();
+            if (response.getStatusCode() == HttpStatus.OK) {
+                return mapper.convertValue(response.getBody(), new TypeReference<>() {});
             }
 
             logger.error("No current user : {}", response.getStatusCode());
@@ -66,7 +66,7 @@ public class AuthService {
         }
     }
 
-    public User refreshToken(JsonNode request){
+    public Map<String, String> refreshToken(JsonNode request){
         try {
             logger.info("Extending session without username and password - refreshToken");
             HttpHeaders headers = new HttpHeaders();
@@ -77,13 +77,11 @@ public class AuthService {
                     REFRESH_TOKEN_URL, HttpMethod.POST, entity, JsonNode.class);
 
             if (response.getStatusCode() == HttpStatus.OK) {
-                var bearerToken = response.getBody().get("token").asText();
-                var refreshToken = response.getBody().get("refreshToken").asText();
-
-                currentUser.setToken(bearerToken);
-                currentUser.setRefreshToken(refreshToken);
-
-                return currentUser;
+                JsonNode responseBody = response.getBody();
+                Map<String, String> updatedTokens = new HashMap<>();
+                updatedTokens.put("token", responseBody.get("token").asText());
+                updatedTokens.put("refreshToken", responseBody.get("refreshToken").asText());
+                return updatedTokens;
             } else {
                 logger.error("Failed to refresh token - status: {}" , response.getStatusCode());
                 throw new RuntimeException("Failed to refresh token: " + response.getStatusCode());

@@ -21,16 +21,11 @@ public class AuthService {
     private final Logger logger = LogManager.getLogger(AuthService.class);
     private User currentUser;
 
-    public User login(){
+    public User login(JsonNode request){
         try {
             logger.info("Sending login request");
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-
-            JsonNode request = mapper.createObjectNode()
-                    .put("username", "emilys")
-                    .put("password", "emilyspass")
-                    .put("expiresInMins", 15);
 
             HttpEntity<JsonNode> entity = new HttpEntity<>(request, headers);
             ResponseEntity<JsonNode> response = restTemplate.exchange(LOGIN_URL, HttpMethod.POST, entity, JsonNode.class);
@@ -71,18 +66,13 @@ public class AuthService {
         }
     }
 
-    public User refreshToken(){
+    public User refreshToken(JsonNode request){
         try {
             logger.info("Extending session without username and password - refreshToken");
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
-            JsonNode request = mapper.createObjectNode()
-                    .put("refreshToken", currentUser.getRefreshToken())
-                    .put("expiresInMins", 30);
-
             HttpEntity<JsonNode> entity = new HttpEntity<>(request, headers);
-
             ResponseEntity<JsonNode> response = restTemplate.exchange(
                     REFRESH_TOKEN_URL, HttpMethod.POST, entity, JsonNode.class);
 

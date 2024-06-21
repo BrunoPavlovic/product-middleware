@@ -2,15 +2,13 @@ package com.example.middleware.controllers;
 
 import com.example.middleware.model.User;
 import com.example.middleware.services.AuthService;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/auth")
@@ -24,9 +22,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(){
+    public ResponseEntity<?> login(@RequestBody JsonNode request){
         logger.info("User login");
-        User user = authService.login();
+        User user = authService.login(request);
 
         if(user != null) {
             logger.info("Successful login");
@@ -51,9 +49,9 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<?> refreshToken(){
+    public ResponseEntity<?> refreshToken(@RequestBody JsonNode request){
         logger.info("Sending request for extending a session with refresh token");
-        User user = authService.refreshToken();
+        User user = authService.refreshToken(request);
         if(user != null){
             logger.debug("Session is extending and new tokens are created");
             return new ResponseEntity<>(user, HttpStatus.OK);

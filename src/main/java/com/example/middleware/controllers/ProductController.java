@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,7 @@ import java.util.List;
 @RequestMapping("/api/v1/products")
 public class ProductController {
     private final ProductService productService;
+    private final Logger logger = LogManager.getLogger(ProductController.class);
 
     @Autowired
     public ProductController(ProductService productService) {
@@ -35,10 +38,14 @@ public class ProductController {
                     content = @Content) })
     @GetMapping
     public ResponseEntity<?> getAllProducts() {
+        logger.info("Fetching all products");
         List<Product> products =  productService.getAllProducts();
         if(!products.isEmpty()){
+            logger.debug("Returning list of products");
             return new ResponseEntity<>(products, HttpStatus.OK);
         }
+
+        logger.warn("No products found");
         return new ResponseEntity<>("No products found!", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -49,15 +56,18 @@ public class ProductController {
                     schema = @Schema(implementation = Product.class)) }),
             @ApiResponse(responseCode = "404", description = "No product found with given id!",
                     content = @Content) })
-    @Parameter( description = "ID of product to be retrieved",
+    @Parameter( description = "Id of product to be retrieved",
             required = true)
     @GetMapping("/{id}")
     public ResponseEntity<?> getProductById(@PathVariable int id) {
+        logger.info("Fetching product by id");
         Product product = productService.getProductById(id);
         if(product != null){
+            logger.debug("Returning product with id: {}", id);
             return new ResponseEntity<>(product, HttpStatus.OK);
         }
 
+        logger.warn("No products with id: {} found", id);
         return new ResponseEntity<>("Product with id " + id + " not found!", HttpStatus.NOT_FOUND);
     }
 
@@ -78,11 +88,14 @@ public class ProductController {
     public ResponseEntity<?> filterProducts(@RequestParam(required = false) String category,
                                             @RequestParam(required = false) Double minPrice,
                                             @RequestParam(required = false) Double maxPrice) {
+        logger.info("Filtering products");
         List<Product> products = productService.filterProducts(category, minPrice, maxPrice);
         if (!products.isEmpty()) {
+            logger.debug("Returning list of products that matches filter");
             return new ResponseEntity<>(products, HttpStatus.OK);
         }
 
+        logger.warn("No products with given filter found");
         return new ResponseEntity<>("No products found with given filter!", HttpStatus.NOT_FOUND);
     }
 
@@ -96,11 +109,14 @@ public class ProductController {
                     content = @Content) })
     @GetMapping("/search")
     public ResponseEntity<?> searchProducts(@RequestParam String title){
+        logger.info("Searching products with title: {}", title);
         List<Product> products = productService.searchProducts(title);
         if(!products.isEmpty()){
+            logger.debug("Returning list of products that matches given title");
             return new ResponseEntity<>(products, HttpStatus.OK);
         }
 
+        logger.warn("No products with title: {} found", title);
         return  new ResponseEntity<>("No products found with given title!", HttpStatus.NOT_FOUND);
     }
 }

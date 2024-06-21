@@ -70,4 +70,37 @@ public class AuthService {
             throw new RuntimeException(e.getMessage());
         }
     }
+
+    public User refreshToken(){
+        try {
+            logger.info("Extending session without username and password - refreshToken");
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            JsonNode request = mapper.createObjectNode()
+                    .put("refreshToken", currentUser.getRefreshToken())
+                    .put("expiresInMins", 30);
+
+            HttpEntity<JsonNode> entity = new HttpEntity<>(request, headers);
+
+            ResponseEntity<JsonNode> response = restTemplate.exchange(
+                    REFRESH_TOKEN_URL, HttpMethod.POST, entity, JsonNode.class);
+
+            if (response.getStatusCode() == HttpStatus.OK) {
+                var bearerToken = response.getBody().get("token").asText();
+                var refreshToken = response.getBody().get("refreshToken").asText();
+
+                currentUser.setToken(bearerToken);
+                currentUser.setRefreshToken(refreshToken);
+
+                return currentUser;
+            } else {
+                logger.error("Failed to refresh token - status: {}" , response.getStatusCode());
+                throw new RuntimeException("Failed to refresh token: " + response.getStatusCode());
+            }
+        } catch (RuntimeException e) {
+            logger.error("Runtime exception while refreshing token: {} ",  e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        }
+    }
 }

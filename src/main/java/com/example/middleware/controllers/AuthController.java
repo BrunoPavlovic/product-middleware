@@ -49,4 +49,17 @@ public class AuthController {
             return new ResponseEntity<>("No current logged user!", HttpStatus.NOT_FOUND);
         }
     }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refreshToken(){
+        logger.info("Sending request for extending a session with refresh token");
+        User user = authService.refreshToken();
+        if(user != null){
+            logger.debug("Session is extending and new tokens are created");
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } else {
+            logger.error("Error while extending session");
+            return new ResponseEntity<>("Error while extending session ", HttpStatus.BAD_REQUEST);
+        }
+    }
 }

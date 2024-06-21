@@ -22,24 +22,52 @@ public class AuthService {
     private User currentUser;
 
     public User login(){
-        logger.info("Sending login request");
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        try {
+            logger.info("Sending login request");
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
 
-        JsonNode request = mapper.createObjectNode()
-                .put("username", "emilys")
-                .put("password", "emilyspass")
-                .put("expiresInMins", 15);
+            JsonNode request = mapper.createObjectNode()
+                    .put("username", "emilys")
+                    .put("password", "emilyspass")
+                    .put("expiresInMins", 15);
 
-        HttpEntity<JsonNode> entity = new HttpEntity<>(request, headers);
-        ResponseEntity<JsonNode> response = restTemplate.exchange(LOGIN_URL, HttpMethod.POST, entity, JsonNode.class);
+            HttpEntity<JsonNode> entity = new HttpEntity<>(request, headers);
+            ResponseEntity<JsonNode> response = restTemplate.exchange(LOGIN_URL, HttpMethod.POST, entity, JsonNode.class);
 
-        if(response.getStatusCode() == HttpStatus.OK) {
-            currentUser = mapper.convertValue(response.getBody(), new TypeReference<>() {});
-            return currentUser;
+            if(response.getStatusCode() == HttpStatus.OK) {
+                currentUser = mapper.convertValue(response.getBody(), new TypeReference<>() {});
+                return currentUser;
+            }
+
+            logger.error("Authentication failed: {}", response.getStatusCode());
+            throw new RuntimeException("Authentication failed with status: " + response.getStatusCode());
+        } catch (RuntimeException e) {
+            logger.error("Runtime exception while user login: {}", e.getMessage());
+            throw new RuntimeException(e.getMessage());
         }
+    }
 
-        logger.error("Authentication failed: {}", response.getStatusCode());
-        throw new RuntimeException("Authentication failed with status: " + response.getStatusCode());
+    public String getCurrentAuthUser(){
+        try {
+            logger.info("Fetching information about current user");
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBearerAuth(currentUser.getToken());
+
+            HttpEntity<JsonNode> entity = new HttpEntity<>(headers);
+            ResponseEntity<JsonNode> response = restTemplate.exchange(CURRENT_USER_URL, HttpMethod.GET, entity, JsonNode.class);
+
+            if(response.getStatusCode() == HttpStatus.OK){
+                JsonNode responseBody = response.getBody();
+                return responseBody.get("username").asText();
+            }
+
+            logger.error("No current user : {}", response.getStatusCode());
+            throw new RuntimeException("No current user - status code: " + response.getStatusCode());
+        } catch (RuntimeException e) {
+            logger.error("Runtime exception : {}", e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }

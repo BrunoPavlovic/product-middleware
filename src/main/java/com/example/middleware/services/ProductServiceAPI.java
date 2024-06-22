@@ -12,12 +12,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ProductService {
+public class ProductServiceAPI {
     private final Repository<Product> repository;
-    private final Logger logger = LogManager.getLogger(ProductService.class);
+    private final Logger logger = LogManager.getLogger(ProductServiceAPI.class);
 
     @Autowired
-    public ProductService(Repository<Product> repository) {
+    public ProductServiceAPI(Repository<Product> repository) {
         this.repository = repository;
     }
 

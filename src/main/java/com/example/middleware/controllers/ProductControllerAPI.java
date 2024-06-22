@@ -3,7 +3,7 @@ package com.example.middleware.controllers;
 import com.example.middleware.model.Product;
 import com.example.middleware.model.UserDetails;
 import com.example.middleware.services.AuthService;
-import com.example.middleware.services.ProductService;
+import com.example.middleware.services.ProductServiceAPI;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -22,13 +22,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/products")
-public class ProductController {
-    private final ProductService productService;
+public class ProductControllerAPI {
+    private final ProductServiceAPI productService;
     private final AuthService authService;
-    private final Logger logger = LogManager.getLogger(ProductController.class);
+    private final Logger logger = LogManager.getLogger(ProductControllerAPI.class);
 
     @Autowired
-    public ProductController(ProductService productService, AuthService authService) {
+    public ProductControllerAPI(ProductServiceAPI productService, AuthService authService) {
         this.productService = productService;
         this.authService = authService;
     }

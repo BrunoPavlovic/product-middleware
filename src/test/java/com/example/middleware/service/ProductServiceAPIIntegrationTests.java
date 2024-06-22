@@ -2,7 +2,7 @@ package com.example.middleware.service;
 
 import com.example.middleware.model.Product;
 import com.example.middleware.repositories.ProductRepositoryAPI;
-import com.example.middleware.services.ProductService;
+import com.example.middleware.services.ProductServiceAPI;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,9 +20,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @Import(ProductRepositoryAPI.class)
-public class ProductServiceIntegrationTests {
+public class ProductServiceAPIIntegrationTests {
     @Autowired
-    private ProductService productService;
+    private ProductServiceAPI productService;
 
     @Autowired
     private CacheManager cacheManager;
@@ -31,7 +31,7 @@ public class ProductServiceIntegrationTests {
     private ProductRepositoryAPI productRepositoryAPI;
 
     @InjectMocks
-    private ProductService productServiceMock;
+    private ProductServiceAPI productServiceMock;
 
     @Test
     void testGetAllProducts_Success() {

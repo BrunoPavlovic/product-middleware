@@ -25,7 +25,7 @@ public class SwaggerConfiguration {
             Info information = new Info()
                     .title("Product Middleware API")
                     .version("1.0")
-                    .description("This API exposes endpoints that are working with data from dummyjson.com .")
+                    .description("This API exposes endpoints that are working with data from dummyjson.com and H2 database.")
                     .contact(myContact);
             return new OpenAPI().info(information).servers(List.of(server));
         }

@@ -4,6 +4,11 @@ import com.example.middleware.model.User;
 import com.example.middleware.model.UserDetails;
 import com.example.middleware.services.AuthService;
 import com.fasterxml.jackson.databind.JsonNode;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +29,13 @@ public class AuthController {
         this.authService = authService;
     }
 
+    @Operation(summary = "User Login", description = "Endpoint for user authentication and login.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful login",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = User.class)) }),
+            @ApiResponse(responseCode = "401", description = "Authentication failed",
+                    content = @Content) })
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody JsonNode request){
         logger.info("User login");
@@ -38,6 +50,13 @@ public class AuthController {
         }
     }
 
+    @Operation(summary = "Get Current User", description = "Endpoint to fetch information about the current logged-in user.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Current user information",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UserDetails.class)) }),
+            @ApiResponse(responseCode = "404", description = "No current logged user",
+                    content = @Content) })
     @GetMapping("/me")
     public ResponseEntity<?> currentUser(@RequestHeader("Authorization") String authorizationHeader){
         logger.info("Fetching information about current user");
@@ -52,6 +71,13 @@ public class AuthController {
         }
     }
 
+    @Operation(summary = "Refresh Token", description = "Endpoint to extend session using refresh token.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Session extended successfully",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Map.class)) }),
+            @ApiResponse(responseCode = "400", description = "Error while extending session",
+                    content = @Content) })
     @PostMapping("/refresh")
     public ResponseEntity<?> refreshToken(@RequestBody JsonNode request){
         logger.info("Sending request for extending a session with refresh token");

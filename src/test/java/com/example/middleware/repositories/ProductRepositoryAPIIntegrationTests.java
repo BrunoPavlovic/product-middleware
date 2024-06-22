@@ -5,10 +5,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@SpringBootTest
 public class ProductRepositoryAPIIntegrationTests {
     @InjectMocks
     private ProductRepositoryAPI productRepositoryAPI;
@@ -50,7 +52,7 @@ public class ProductRepositoryAPIIntegrationTests {
     }
 
     @Test
-    void testFilterByCategoryAndPrice() {
+    void testFilterByCategoryAndPrice_Success() {
         List<Product> filteredProducts = productRepositoryAPI.filterByCategoryAndPrice("beauty", 2.0, 20.0);
 
         assertEquals(5, filteredProducts.size());
@@ -58,7 +60,7 @@ public class ProductRepositoryAPIIntegrationTests {
     }
 
     @Test
-    void testSearchByTitle(){
+    void testSearchByTitle_Success(){
         List<Product> searchedProducts = productRepositoryAPI.searchByTitle("Esse");
 
         assertEquals(1, searchedProducts.size());

@@ -2,30 +2,40 @@ package com.example.middleware.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "product")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Product {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty("id")
     private int id;
 
+    @Column(name = "title")
     @JsonProperty("title")
     private String title;
 
+    @Column(name = "description")
     @JsonProperty("description")
     private String description;
 
+    @Column(name = "price")
     @JsonProperty("price")
     private double price;
 
+    @Column(name = "category")
     @JsonProperty("category")
     private String category;
 
+    @Column(name = "thumbnail")
     @JsonProperty("thumbnail")
     private String thumbnail;
 
     public Product(){}
 
-    public Product(int id, String title, String description, int price, String category, String thumbnail) {
+    public Product(int id, String title, String description, double price, String category, String thumbnail) {
         this.id = id;
         this.title = title;
         this.description = description;

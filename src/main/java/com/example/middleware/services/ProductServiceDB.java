@@ -29,4 +29,14 @@ public class ProductServiceDB {
         logger.info("Fetching product by id from DB");
         return productRepository.findById(id).orElse(null);
     }
+
+    @Cacheable(value = "products", key = "'filter:' + #category + ':' + #minPrice + ':' + #maxPrice")
+    public List<Product> filterProducts(String category, Double minPrice, Double maxPrice) {
+        logger.info("Filtering products from DB");
+        return productRepository.findAll().stream()
+                .filter(product -> (category == null || product.getCategory().equals(category)) &&
+                        (minPrice == null || product.getPrice() >= minPrice) &&
+                        (maxPrice == null || product.getPrice() <= maxPrice))
+                .toList();
+    }
 }

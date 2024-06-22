@@ -84,6 +84,39 @@ public class ProductControllerDB {
         return new ResponseEntity<>("Product with id " + id + " not found in DB!", HttpStatus.NOT_FOUND);
     }
 
+    @Operation(summary = "Filter products",
+            description = "Filter products that match the applied filter criteria (category, minPrice, maxPrice)." +
+                    " The response is list of Products or error message.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = Product.class)) }),
+            @ApiResponse(responseCode = "404", description = "No products found with given filter!",
+                    content = @Content) })
+    @Parameters({
+            @Parameter(name = "category", description = "Category of the product", required = false, schema = @Schema(type = "String")),
+            @Parameter(name = "minPrice", description = "Minimum price of the product", required = false, schema = @Schema(type = "integer")),
+            @Parameter(name = "maxPrice", description = "Maximum price of the product", required = false, schema = @Schema(type = "integer"))
+    })
+    @GetMapping("/filter")
+    public ResponseEntity<?> filterProducts(@RequestHeader("Authorization") String authorizationHeader,
+                                            @RequestParam(required = false) String category,
+                                            @RequestParam(required = false) Double minPrice,
+                                            @RequestParam(required = false) Double maxPrice) {
+        if(!isLoggedIn(authorizationHeader)){
+            return new ResponseEntity<>("Unauthorized access", HttpStatus.UNAUTHORIZED);
+        }
+
+        logger.info("Filtering products in DB");
+        List<Product> products = productService.filterProducts(category, minPrice, maxPrice);
+        if (!products.isEmpty()) {
+            logger.debug("Returning list of products from DB that matches filter");
+            return new ResponseEntity<>(products, HttpStatus.OK);
+        }
+
+        logger.warn("No products found in DB with given filter");
+        return new ResponseEntity<>("No products found in DB with given filter!", HttpStatus.NOT_FOUND);
+    }
+
     private boolean isLoggedIn(String authorizationHeader) {
         logger.info("Authorization with Bearer token");
         String token = authorizationHeader.substring("Bearer ".length());

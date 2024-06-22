@@ -117,6 +117,32 @@ public class ProductControllerDB {
         return new ResponseEntity<>("No products found in DB with given filter!", HttpStatus.NOT_FOUND);
     }
 
+    @Operation(summary = "Search products",
+            description = "Search products in DB that match the provided title." +
+                    " The response is list of Products or error message.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = Product.class)) }),
+            @ApiResponse(responseCode = "404", description = "No products found with given title!",
+                    content = @Content) })
+    @GetMapping("/search")
+    public ResponseEntity<?> searchProducts(@RequestHeader("Authorization") String authorizationHeader,
+                                            @RequestParam String title){
+        if(!isLoggedIn(authorizationHeader)){
+            return new ResponseEntity<>("Unauthorized access", HttpStatus.UNAUTHORIZED);
+        }
+
+        logger.info("Searching products in DB with title: {}", title);
+        List<Product> products = productService.searchProducts(title);
+        if(!products.isEmpty()){
+            logger.debug("Returning list of products from DB that matches given title");
+            return new ResponseEntity<>(products, HttpStatus.OK);
+        }
+
+        logger.warn("No products found in DB with title: {}", title);
+        return  new ResponseEntity<>("No products found in DB with given title!", HttpStatus.NOT_FOUND);
+    }
+
     private boolean isLoggedIn(String authorizationHeader) {
         logger.info("Authorization with Bearer token");
         String token = authorizationHeader.substring("Bearer ".length());

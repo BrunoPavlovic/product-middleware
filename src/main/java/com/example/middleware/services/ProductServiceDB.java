@@ -39,4 +39,12 @@ public class ProductServiceDB {
                         (maxPrice == null || product.getPrice() <= maxPrice))
                 .toList();
     }
+
+    @Cacheable(value = "products", key = "'search: ' + #title")
+    public List<Product> searchProducts(String title){
+        logger.info("Searching products from DB");
+        return productRepository.findAll().stream()
+                .filter(product -> product.getTitle().contains(title))
+                .toList();
+    }
 }

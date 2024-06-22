@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Repository
 public class ProductRepositoryAPI implements Repository<Product> {
-    private static final String BASE_URL = "https://dummyjson.com/products";
+    public static final String BASE_URL = "https://dummyjson.com/products";
     private static final ObjectMapper mapper = new ObjectMapper();
     private final RestTemplate restTemplate = new RestTemplate();
     private final Logger logger = LogManager.getLogger(ProductRepositoryAPI.class);
@@ -43,7 +43,7 @@ public class ProductRepositoryAPI implements Repository<Product> {
             return restTemplate.getForObject(BASE_URL + "/" + id, Product.class);
         } catch (RestClientException e) {
             logger.error("Error while fetching product with given id: {}" , e.getMessage());
-            throw new RuntimeException("Error while fetching product with given id: " + e.getMessage());
+            throw new RuntimeException("Error while fetching product with given id -> " + e.getMessage());
         }
     }
 

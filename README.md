@@ -8,7 +8,7 @@ The application is built using Spring Boot and leverages Spring Data JPA for dat
 * [Key features](#Key-features)<br>
 * [Configuration](#Configuration)<br>
 * [Run application](#Running-the-application)<br>
-        1. [IntelliJ](#Running-Locally-Through-IntelliJ-IDEA (Recommended))<br>
+        1. [IntelliJ](#Running-with-IntelliJ)<br>
         2. [Docker](#Running-with-Docker)<br>      
 - [Testing](#Testing)<br>
         1. [Authorization](#Authorization)<br>
@@ -47,7 +47,7 @@ First thing you need to do is **clone GitHub repository** and checkout on master
 
 Application can run with docker or without docker. I recommend running without docker because it is more time efficient, but I implemented **docker-compose.yml** and Dockerfile for easier future deployment and scalability. Both ways are described below.
 
-### Running Locally Through IntelliJ IDEA (Recommended)
+### Running with IntelliJ
 To run application with IntelliJ IDEA you need to select main class as configuration (like on the picture).
 Main class is located at **java/com/example/middleware/MiddlewareApplication.java**
 

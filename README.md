@@ -4,6 +4,19 @@ Middleware interacts with data from dummyjson.com and an H2 database.
 It exposes several endpoints to manage product data, including retrieving, filtering, and searching for products.
 The application is built using Spring Boot and leverages Spring Data JPA for database interactions.
 
+## Table of contents
+* [Key features](#Key-features)<br>
+* [Configuration](#Configuration)<br>
+* [Running application](#Running-application)<br>
+        1. [IntelliJ](#Running-Locally-Through-IntelliJ-IDEA-(Recommended))<br>
+        2. [Docker](#Running-with-Docker)<br>      
+- [Testing](#Testing)<br>
+        1. [Authorization](#Authorization)<br>
+        2. [Swagger-UI](#Swagger-UI)<br>
+        3. [Postman](#Postman)<br>
+        4. [Unit and integration tests](#Unit-and-integration-tests)<br>
+- [Technology stack](#Technology-stack)                 
+
 ## Key features
 - Product Management: Endpoints for retrieving all products, filtering by category and price, and searching by title.
 - Database: Uses H2 database for data storage.
@@ -52,7 +65,7 @@ To run application with docker first you need to **build the JAR file**. You can
 From root directory run command : **docker-compose up -d --build**
 
 
-## Testing application 
+## Testing 
 After the application is started you can access it on: http://localhost:8080/
 
 ### Authorization

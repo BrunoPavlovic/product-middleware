@@ -87,12 +87,13 @@ With swagger testing is easy, in endpoint details there is button **Try it out**
 
 Test application with swagger-ui on: [Click here](http://localhost:8080/swagger-ui/index.html#/)
 
-1. If you already aren't look at [Authorization](#Authorization) and send request so you get token.
-2. Before documented endpoints there is button Authorize -> click it -> input **Bearer <your_token_here>**
+1. If you already aren't, look at [Authorization](#Authorization) and send request so you get token.
+2. Before documented endpoints there is button Authorize -> click it -> input -> **Bearer <your_token_here>**
 3. Now you can send any request with Try it out ( remark : you need to input anything in authorization because functions in controller have annotation @Request Header) -> so you simply write for example Bearer and send request and you will see in curl command that Swagger used token you define in second step and not the one you provided as parameter ).
 
 ### Postman
-I have preapred Postman Workspace for testing the API. [Workspace](https://app.getpostman.com/join-team?invite_code=d835f3834911b6c14b292ddbeab18e23&target_code=8a62904c9ab51154f401740baafde1b3).
+I have preapred Postman Workspace for testing the API.<br>
+[Workspace](https://app.getpostman.com/join-team?invite_code=d835f3834911b6c14b292ddbeab18e23&target_code=8a62904c9ab51154f401740baafde1b3). <br>
 For every endpoint there is predefined request.
 
 Using postman:

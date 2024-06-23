@@ -26,9 +26,6 @@ public class ProductServiceAPIIntegrationTests {
     @Autowired
     private CacheManager cacheManager;
 
-    @InjectMocks
-    private ProductServiceAPI productServiceMock;
-
     @Test
     void testGetAllProducts_Success() {
         List<Product> products = productService.getAllProducts();

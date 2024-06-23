@@ -7,8 +7,8 @@ The application is built using Spring Boot and leverages Spring Data JPA for dat
 ## Table of contents
 * [Key features](#Key-features)<br>
 * [Configuration](#Configuration)<br>
-* [Running application](#Running-application)<br>
-        1. [IntelliJ](#Running-Locally-Through-IntelliJ-IDEA-(Recommended))<br>
+* [Run application](#Running-the-application)<br>
+        1. [IntelliJ](#Running-Locally-Through-IntelliJ-IDEA (Recommended))<br>
         2. [Docker](#Running-with-Docker)<br>      
 - [Testing](#Testing)<br>
         1. [Authorization](#Authorization)<br>

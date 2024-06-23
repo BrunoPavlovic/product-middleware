@@ -1,7 +1,6 @@
 package com.example.middleware.controllers;
 
 import com.example.middleware.model.Product;
-import com.example.middleware.model.UserDetails;
 import com.example.middleware.services.AuthorizationService;
 import com.example.middleware.services.ProductServiceAPI;
 import io.swagger.v3.oas.annotations.Operation;

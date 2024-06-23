@@ -1,8 +1,7 @@
-package com.example.middleware.service;
+package com.example.middleware.services;
 
 import com.example.middleware.model.Product;
 import com.example.middleware.repositories.ProductRepositoryAPI;
-import com.example.middleware.services.ProductServiceAPI;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,9 +25,6 @@ public class ProductServiceAPIIntegrationTests {
 
     @Autowired
     private CacheManager cacheManager;
-
-    @Mock
-    private ProductRepositoryAPI productRepositoryAPI;
 
     @InjectMocks
     private ProductServiceAPI productServiceMock;

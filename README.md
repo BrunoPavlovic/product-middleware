@@ -1,5 +1,16 @@
 # Product middleware
 REST middleware API that displays products with advanced filtering capabilities.
+Middleware interacts with data from dummyjson.com and an H2 database.
+It exposes several endpoints to manage product data, including retrieving, filtering, and searching for products.
+The application is built using Spring Boot and leverages Spring Data JPA for database interactions.
+
+## Key features
+- Product Management: Endpoints for retrieving all products, filtering by category and price, and searching by title.
+- Database: Uses H2 database for data storage.
+- Caching: Implements caching for product filtering and searching to improve performance.
+- Logging: Comprehensive logging with info, warning, error and debug.
+- Swagger UI: API documentation and testing available through Swagger UI.
+- Authentication and Authorization: Secured endpoints with token-based authentication and authorization.
 
 ## Configuration
 
@@ -80,4 +91,13 @@ Using postman:
 ### Unit and integration tests
 Currently, tests are developed for ProductRepository, ProductService, and ProductController.<br>
 You can run them by right-clicking on the test class ( src/test/java/com/example/middleware/)  and selecting Run, or you can run individual tests directly from their respective test classes.
+
+## Technology stack
+- Framework: Spring Boot
+- Database: H2 Database
+- ORM: JPA
+- Caching: Spring Cache
+- Logging: Apache Log4j
+- API Documentation: Swagger UI
+- Containerization: Docker
 

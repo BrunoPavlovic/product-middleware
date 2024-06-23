@@ -55,7 +55,7 @@ After that you simply click run or with keys Shift + F10.
 
 ![Intellij IDEA running application](https://github.com/BrunoPavlovic/product-middleware/assets/100703459/19ed1e9e-ed6c-44e3-b2e6-cc761076e2fd)
 
-## Running with Docker
+### Running with Docker
 To run application with docker first you need to **build the JAR file**. You can do it on 2 ways:
   1. Trough IntelliJ - open Gradle view -> Tasks -> build -> Double click on build
      ![Build gradle](https://github.com/BrunoPavlovic/product-middleware/assets/100703459/6bac376b-d2f8-43a5-8a78-306ad642a679)

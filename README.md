@@ -18,7 +18,7 @@ The application is built using Spring Boot and leverages Spring Data JPA for dat
 - [Technology stack](#Technology-stack)                 
 
 ## Key features
-- Product Management: Endpoints for retrieving all products, filtering by category and price, and searching by title.
+- Product Management: Endpoints for retrieving all products, retrieving specific product, filtering by category and price, and searching by title.
 - Database: Uses H2 database for data storage.
 - Caching: Implements caching for product filtering and searching to improve performance.
 - Logging: Comprehensive logging with info, warning, error and debug.
